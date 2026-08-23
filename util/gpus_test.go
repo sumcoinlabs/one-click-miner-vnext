@@ -27,10 +27,27 @@ func TestAMD(t *testing.T) {
 }
 
 func TestInvalid(t *testing.T) {
-	gpus := []string{"Intel Integrated Graphics"}
+	gpus := []string{"Unknown Generic GPU"}
 	g := GetGPUsFromStrings(gpus)
 	for _, gpu := range g {
 		if gpu.Type != GPUTypeOther {
+			t.Fail()
+		}
+	}
+}
+
+func TestApple(t *testing.T) {
+	gpus := []string{
+		"Apple M1",
+		"Apple M1 Pro",
+		"Apple M1 Max",
+		"Apple M2",
+		"Apple M3",
+		"Apple M4",
+	}
+	g := GetGPUsFromStrings(gpus)
+	for _, gpu := range g {
+		if gpu.Type != GPUTypeApple {
 			t.Fail()
 		}
 	}

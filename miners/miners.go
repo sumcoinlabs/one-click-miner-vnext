@@ -47,6 +47,8 @@ func GetMinerBinaries() []MinerBinary {
 			binaries[i].GPUType = util.GPUTypeNVidia
 		} else if binaries[i].GpuPlatformString == "INTEL" {
 			binaries[i].GPUType = util.GPUTypeIntel
+		} else if binaries[i].GpuPlatformString == "APPLE" {
+			binaries[i].GPUType = util.GPUTypeApple
 		} else {
 			logging.Warnf("Found unrecognized platform [%s] in miners.json\n", binaries[i].GpuPlatformString)
 		}
