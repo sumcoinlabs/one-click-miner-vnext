@@ -35,7 +35,7 @@ type MinerBinary struct {
 
 func GetMinerBinaries() []MinerBinary {
 	binaries := []MinerBinary{}
-	err := util.GetJson("https://raw.githubusercontent.com/vertcoin-project/one-click-miner-vnext/master/miners.json", &binaries)
+	err := util.GetJson("https://raw.githubusercontent.com/sumcoinlabs/one-click-miner-vnext/macos-support/miners.json", &binaries)
 	if err != nil {
 		logging.Errorf("Error fetching miner binaries: %v", err)
 		return binaries
@@ -47,6 +47,8 @@ func GetMinerBinaries() []MinerBinary {
 			binaries[i].GPUType = util.GPUTypeNVidia
 		} else if binaries[i].GpuPlatformString == "INTEL" {
 			binaries[i].GPUType = util.GPUTypeIntel
+		} else if binaries[i].GpuPlatformString == "APPLE" {
+			binaries[i].GPUType = util.GPUTypeApple
 		} else {
 			logging.Warnf("Found unrecognized platform [%s] in miners.json\n", binaries[i].GpuPlatformString)
 		}

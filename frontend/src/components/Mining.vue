@@ -140,25 +140,25 @@ export default {
     window.backend.Backend.GetPoolFee().then(result => {
       self.poolFee = result;
     });
-    window.wails.Events.On("hashRate", result => {
+    window.ocmRuntime.Events.On("hashRate", result => {
       self.hashrate = result;
     });
-    window.wails.Events.On("runningMiners", result => {
+    window.ocmRuntime.Events.On("runningMiners", result => {
       self.runningMiners = result;
     });
-    window.wails.Events.On("networkHashRate", result => {
+    window.ocmRuntime.Events.On("networkHashRate", result => {
       self.netHash = result;
     });
-    window.wails.Events.On("avgEarnings", result => {
+    window.ocmRuntime.Events.On("avgEarnings", result => {
       self.avgearn = result;
     });
-    window.wails.Events.On("balance", result => {
+    window.ocmRuntime.Events.On("balance", result => {
       self.balance = result;
     });
-    window.wails.Events.On("balanceImmature", result => {
+    window.ocmRuntime.Events.On("balanceImmature", result => {
       self.balanceImmature = result;
     });
-    window.wails.Events.On("balancePendingPool", result => {
+    window.ocmRuntime.Events.On("balancePendingPool", result => {
       self.balancePendingPool = result;
     });
     window.backend.Backend.RefreshBalance();

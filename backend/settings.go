@@ -2,6 +2,7 @@ package backend
 
 import (
 	"fmt"
+	wailsruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 	"math/rand"
 	"strconv"
 
@@ -117,8 +118,8 @@ func (m *Backend) GetPools() []PoolChoice {
 }
 
 func (m *Backend) GetTestnet() bool {
-        return false // Testnet is not necessary - return false
-        //return m.getSetting("testnet")
+	return false // Testnet is not necessary - return false
+	//return m.getSetting("testnet")
 }
 
 func (m *Backend) SetTestnet(newTestnet bool) {
@@ -182,6 +183,6 @@ func (m *Backend) PrerequisiteProxyLoop() {
 		if pi {
 			send = "1"
 		}
-		m.runtime.Events.Emit("prerequisiteInstall", send)
+		wailsruntime.EventsEmit(m.ctx, "prerequisiteInstall", send)
 	}
 }

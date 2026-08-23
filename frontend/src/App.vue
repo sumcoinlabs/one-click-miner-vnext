@@ -38,7 +38,7 @@ export default {
   },
   mounted() {
     var self = this;
-    window.wails.Events.On("minerRapidFail", () => {
+    window.ocmRuntime.Events.On("minerRapidFail", () => {
       window.backend.Backend.StopMining().then(() => {
         self.switchToChecks();
       });

@@ -17,6 +17,7 @@ const (
 	GPUTypeAMD    GPUType = 1
 	GPUTypeNVidia GPUType = 2
 	GPUTypeIntel  GPUType = 3
+	GPUTypeApple  GPUType = 4
 )
 
 type GPU struct {
@@ -44,6 +45,7 @@ var knownGPUs = []KnownGPU{
 	KnownGPU{".*AMD.*", GPUTypeAMD, nil},
 	KnownGPU{".*Intel.*", GPUTypeIntel, nil},
 	KnownGPU{".*Radeon.*", GPUTypeAMD, nil},
+	KnownGPU{".*Apple.*", GPUTypeApple, nil},
 }
 
 func init() {

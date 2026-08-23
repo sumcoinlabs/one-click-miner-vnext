@@ -1,7 +1,8 @@
 import Vue from "vue";
 import App from "./App.vue";
 import VueI18n from "vue-i18n";
-import * as Wails from "@wailsapp/runtime"
+import "./wails-v2-bridge";
+import { LogInfo, LogError } from "../wailsjs/runtime/runtime";
 
 Vue.use(VueI18n);
 Vue.config.productionTip = false;
@@ -31,41 +32,87 @@ import locale_sv from "./i18n/sv.json";
 import locale_tr from "./i18n/tr.json";
 import locale_zh from "./i18n/zh.json";
 
-Wails.Init(() => {
-    window.backend.Backend.GetLocale().then(result => {
-
-        const i18n = new VueI18n({
-            locale: result, // set locale
-            fallbackLocale: 'en',
-            messages: {
-		bg: locale_bg,
-                da: locale_da,
-                de: locale_de,
-                en: locale_en,
-                es: locale_es,
-                fr: locale_fr,
-                hi: locale_hi,
-                hr: locale_hr,
-                it: locale_it,
-                ja: locale_ja,
-		lt: locale_lt,
-                nl: locale_nl,
-                no: locale_no,
-                pa: locale_pa,
-                pl: locale_pl,
-                pt: locale_pt,
-                ro: locale_ro,
-                ru: locale_ru,
-                sl: locale_sl,
-                sv: locale_sv,
-		tr: locale_tr,
-                zh: locale_zh,
-            },
-        });
-        
-        new Vue({
-            i18n,
-            render: h => h(App)
-        }).$mount("#app");
-    });
+const i18n = new VueI18n({
+  locale: "en",
+  fallbackLocale: "en",
+  messages: {
+    bg: locale_bg,
+    da: locale_da,
+    de: locale_de,
+    en: locale_en,
+    es: locale_es,
+    fr: locale_fr,
+    hi: locale_hi,
+    hr: locale_hr,
+    it: locale_it,
+    ja: locale_ja,
+    lt: locale_lt,
+    nl: locale_nl,
+    no: locale_no,
+    pa: locale_pa,
+    pl: locale_pl,
+    pt: locale_pt,
+    ro: locale_ro,
+    ru: locale_ru,
+    sl: locale_sl,
+    sv: locale_sv,
+    tr: locale_tr,
+    zh: locale_zh
+  }
 });
+
+// Send Vue errors to the Wails/Terminal log.
+Vue.config.errorHandler = (err, vm, info) => {
+  LogError(
+    "Vue error: " +
+      String(err) +
+      " | info: " +
+      String(info) +
+      (err && err.stack ? " | stack: " + err.stack : "")
+  );
+};
+
+// Catch normal JavaScript errors too.
+window.addEventListener("error", event => {
+  const err = event.error;
+
+  LogError(
+    "Frontend JS error: " +
+      String(event.message) +
+      (err && err.stack ? " | stack: " + err.stack : "")
+  );
+});
+
+// Catch failed promises.
+window.addEventListener("unhandledrejection", event => {
+  const reason = event.reason;
+
+  LogError(
+    "Frontend promise rejection: " +
+      String(reason) +
+      (reason && reason.stack ? " | stack: " + reason.stack : "")
+  );
+});
+
+LogInfo("Frontend: starting Vue mount");
+
+const vm = new Vue({
+  i18n,
+  render: h => h(App)
+});
+
+vm.$mount("#app");
+
+LogInfo("Frontend: Vue mount completed");
+
+// Locale detection is optional. It must NEVER prevent the UI from starting.
+window.backend.Backend.GetLocale()
+  .then(result => {
+    if (result) {
+      i18n.locale = result;
+      LogInfo("Frontend: locale changed to " + result);
+    }
+  })
+  .catch(err => {
+    LogError("Frontend: GetLocale failed: " + String(err));
+  });

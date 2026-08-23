@@ -1,13 +1,12 @@
 package main
 
 import (
+	"embed"
 	"fmt"
 	"log"
 	"os"
 	"path/filepath"
 	"runtime/debug"
-
-	_ "embed"
 
 	"github.com/marcsauter/single"
 	"github.com/vertcoin-project/one-click-miner-vnext/backend"
@@ -15,21 +14,17 @@ import (
 	"github.com/vertcoin-project/one-click-miner-vnext/networks"
 	"github.com/vertcoin-project/one-click-miner-vnext/tracking"
 	"github.com/vertcoin-project/one-click-miner-vnext/util"
-	"github.com/wailsapp/wails"
+	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/options"
+	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 )
 
-//nolint:all
-//go:embed frontend/dist/app.js
-var js string
-
-//nolint:all
-//go:embed frontend/dist/app.css
-var css string
+//go:embed all:frontend/dist
+var assets embed.FS
 
 func main() {
 	defer func() {
 		if err := recover(); err != nil {
-			// Reopen log file, since it's closed now!
 			logging.SetLogLevel(int(logging.LogLevelDebug))
 			logFilePath := filepath.Join(util.DataDirectory(), "debug.log")
 			logFile, _ := os.OpenFile(logFilePath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
@@ -42,23 +37,13 @@ func main() {
 				Action:   "Crash",
 				Name:     fmt.Sprintf("%v", err),
 			})
-
 		}
 	}()
-
-	tracking.StartTracker()
-
-	tracking.Track(tracking.TrackingRequest{
-		Category: "Lifecycle",
-		Action:   "Startup",
-		Name:     fmt.Sprintf("OCM/%s", tracking.GetVersion()),
-	})
 
 	logging.SetLogLevel(int(logging.LogLevelDebug))
 	if _, err := os.Stat(util.DataDirectory()); os.IsNotExist(err) {
 		logging.Infof("Creating data directory")
-		err = os.MkdirAll(util.DataDirectory(), 0700)
-		if err != nil && !os.IsExist(err) {
+		if err := os.MkdirAll(util.DataDirectory(), 0700); err != nil && !os.IsExist(err) {
 			logging.Errorf("Error creating data directory, cannot continue")
 			os.Exit(1)
 		}
@@ -69,16 +54,14 @@ func main() {
 	logging.SetLogFile(logFile)
 	defer logFile.Close()
 
-	log.Printf("OCM v%s Started up\n", tracking.GetVersion())
-
-	app := wails.CreateApp(&wails.AppConfig{
-		Width:  800,
-		Height: 400,
-		Title:  "Vertcoin One Click Miner",
-		JS:     js,
-		CSS:    css,
-		Colour: "#131313",
+	tracking.StartTracker()
+	tracking.Track(tracking.TrackingRequest{
+		Category: "Lifecycle",
+		Action:   "Startup",
+		Name:     fmt.Sprintf("OCM/%s", tracking.GetVersion()),
 	})
+
+	log.Printf("OCM v%s Started up\n", tracking.GetVersion())
 
 	alreadyRunning := false
 	s := single.New("vertcoin-ocm")
@@ -86,35 +69,40 @@ func main() {
 		alreadyRunning = true
 	} else if err == nil {
 		defer func() {
-			err := s.TryUnlock()
-			if err != nil {
+			if err := s.TryUnlock(); err != nil {
 				logging.Errorf("Error unlocking OCM: %v", err)
 			}
 		}()
 	}
 
-	backend, err := backend.NewBackend(alreadyRunning)
+	appBackend, err := backend.NewBackend(alreadyRunning)
 	if err != nil {
 		logging.Errorf("Error creating Backend: %s", err.Error())
 		panic(err)
 	}
-	networks.SetNetwork(backend.GetTestnet())
 
-	go backend.BackendServerSelector()
-	go backend.SelectP2PoolNode()
+	networks.SetNetwork(appBackend.GetTestnet())
+	go appBackend.BackendServerSelector()
+	go appBackend.SelectP2PoolNode()
+	appBackend.ResetPool()
 
-	backend.ResetPool()
-	app.Bind(backend)
-	err = app.Run()
+	err = wails.Run(&options.App{
+		Title:            "Vertcoin One Click Miner",
+		Width:            800,
+		Height:           400,
+		AssetServer:      &assetserver.Options{Assets: assets},
+		BackgroundColour: &options.RGBA{R: 19, G: 19, B: 19, A: 255},
+		OnStartup:        appBackend.Startup,
+		Bind:             []interface{}{appBackend},
+	})
 	if err != nil {
 		logging.Errorf("Error running app: %v", err)
 	}
-	backend.StopMining()
 
+	appBackend.StopMining()
 	tracking.Track(tracking.TrackingRequest{
 		Category: "Lifecycle",
 		Action:   "Shutdown",
 	})
-
 	tracking.Stop()
 }

@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <div class="col-286" v-if="alreadyRunning === false && walletInitialized === -1">
+      <p>Loading wallet...</p>
+    </div>
     <div class="col-286" v-if="alreadyRunning === false && walletInitialized === 0">
       <p>{{ $t("welcome.makeapassword") }}</p>
       <p class="error" v-if="error !== ''">{{error}}</p>

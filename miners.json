@@ -1,5 +1,17 @@
 [
     {
+        "platform": "darwin",
+        "gpuplatform" : "APPLE",
+        "url" : "https://github.com/sumcoinlabs/VerthashMiner/releases/download/macos-arm64-v1/VerthashMiner-macos-arm64.tar.gz",
+        "sha256" : "60d2ea2d1fc236770b3f91f1fdfab3c7b891883be2f2c3225be1c0e565b453a1",
+        "mainExecutableName" : "VerthashMiner",
+        "closedSource" : false,
+        "testnet" : false,
+        "blockHeightMin": 1499999,
+        "blockHeightMax": -1,
+        "multiGPUMiner": true
+    },
+    {
         "platform": "windows",
         "gpuplatform" : "AMD",
         "url" : "https://github.com/CryptoGraphics/VerthashMiner/releases/download/0.7.2/VerthashMiner-0.7.2-CUDA11-windows.zip",

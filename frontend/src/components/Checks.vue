@@ -38,13 +38,13 @@ export default {
   mounted() {
     this.check();
     var self = this;
-    window.wails.Events.On("checkStatus", result => {
+    window.ocmRuntime.Events.On("checkStatus", result => {
       self.checkStatus = result;
     });
-    window.wails.Events.On("prerequisiteInstall", result => {
+    window.ocmRuntime.Events.On("prerequisiteInstall", result => {
       self.prerequisiteInstall = result === "1";
     });
-    window.wails.Events.On("verthashProgress", result => {
+    window.ocmRuntime.Events.On("verthashProgress", result => {
       self.verthashProgress = result;
     })
   },
