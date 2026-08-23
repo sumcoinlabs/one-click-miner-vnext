@@ -124,7 +124,7 @@ export default {
   },
   mounted() {
     var self = this;
-    window.wails.Events.On("createTransactionResult", result => {
+    window.ocmRuntime.Events.On("createTransactionResult", result => {
       self.receivedBalance = result.FormattedAmount;
       self.receivedTxCount = result.NumberOfTransactions;
     });

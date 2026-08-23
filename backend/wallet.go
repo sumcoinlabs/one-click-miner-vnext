@@ -2,6 +2,7 @@ package backend
 
 import (
 	"fmt"
+	wailsruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 
 	"github.com/vertcoin-project/one-click-miner-vnext/keyfile"
 	"github.com/vertcoin-project/one-click-miner-vnext/logging"
@@ -99,7 +100,7 @@ func (m *Backend) PrepareSweep(addr string) string {
 	result := PrepareResult{fmt.Sprintf("%0.8f VTC", val), len(txs)}
 	logging.Debugf("Prepared sweep: %v", result)
 
-	m.runtime.Events.Emit("createTransactionResult", result)
+	wailsruntime.EventsEmit(m.ctx, "createTransactionResult", result)
 	return ""
 }
 

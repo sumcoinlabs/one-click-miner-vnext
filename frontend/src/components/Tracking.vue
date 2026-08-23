@@ -46,7 +46,7 @@ export default {
     window.backend.Backend.UpdateAvailable().then(result => {
       self.updateAvailable = result;
     });
-    window.wails.Events.On("updateAvailable", result => {
+    window.ocmRuntime.Events.On("updateAvailable", result => {
       self.updateAvailable = result;
     });
   },

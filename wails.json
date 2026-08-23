@@ -1,0 +1,14 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "Vertcoin One Click Miner",
+  "outputfilename": "vertcoin-ocm",
+  "frontend:install": "npm install",
+  "frontend:build": "npm run build",
+  "frontend:dev:watcher": "npm run serve",
+  "frontend:dev:serverUrl": "http://localhost:8080",
+  "wailsjsdir": "./frontend",
+  "author": {
+    "name": "SumcoinLabs",
+    "email": ""
+  }
+}

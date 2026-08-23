@@ -1,6 +1,7 @@
 package backend
 
 import (
+	wailsruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 	"time"
 
 	"github.com/vertcoin-project/one-click-miner-vnext/tracking"
@@ -33,6 +34,6 @@ func (m *Backend) UpdateLoop() {
 			break
 		}
 
-		m.runtime.Events.Emit("updateAvailable", m.UpdateAvailable())
+		wailsruntime.EventsEmit(m.ctx, "updateAvailable", m.UpdateAvailable())
 	}
 }

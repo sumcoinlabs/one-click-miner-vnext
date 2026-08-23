@@ -6,3 +6,6 @@ vertcoin-ocm.exe
 *.exe
 *.manifest
 *.syso
+# Wails v2 generated output
+/build/
+/frontend/wailsjs/

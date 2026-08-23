@@ -9,8 +9,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@wailsapp/runtime": "^1.0.10",
-    "core-js": "^2.6.11",
+    "core-js": "^3.50.0",
     "lodash": "^4.17.21",
     "lodash.clonedeep": "^4.5.0",
     "lodash.defaultsdeep": "^4.6.1",
