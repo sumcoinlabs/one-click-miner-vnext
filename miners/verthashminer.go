@@ -204,7 +204,7 @@ func (l *VerthashMinerImpl) ConstructCommandlineArgs(args BinaryArguments) []str
 		l.binaryRunner.MinerBinary.GPUType == util.GPUTypeApple {
 		return []string{
 			"--conf", conf,
-			"--cl-devices", "0:w256:m0:t0",
+			"--cl-devices", "0:w0:b250:o100:m0:t0",
 		}
 	}
 
