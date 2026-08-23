@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -197,7 +198,17 @@ func (l *VerthashMinerImpl) HashRate() uint64 {
 }
 
 func (l *VerthashMinerImpl) ConstructCommandlineArgs(args BinaryArguments) []string {
-	return []string{"--conf", filepath.Join(util.DataDirectory(), "verthash-miner.conf")}
+	conf := filepath.Join(util.DataDirectory(), "verthash-miner.conf")
+
+	if runtime.GOOS == "darwin" &&
+		l.binaryRunner.MinerBinary.GPUType == util.GPUTypeApple {
+		return []string{
+			"--conf", conf,
+			"--cl-devices", "0:w256:m0:t0",
+		}
+	}
+
+	return []string{"--conf", conf}
 }
 
 func (l *VerthashMinerImpl) AvailableGPUs() int8 {
