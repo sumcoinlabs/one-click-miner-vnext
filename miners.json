@@ -3,7 +3,7 @@
         "platform": "darwin",
         "gpuplatform" : "APPLE",
         "url" : "https://github.com/sumcoinlabs/VerthashMiner/releases/download/macos-arm64-v1/VerthashMiner-macos-arm64.tar.gz",
-        "sha256" : "60d2ea2d1fc236770b3f91f1fdfab3c7b891883be2f2c3225be1c0e565b453a1",
+        "sha256" : "4624cb9124b5b2025c479e24233cf2fe6955f41642fd928bafc93fb71ffe071a",
         "mainExecutableName" : "VerthashMiner",
         "closedSource" : false,
         "testnet" : false,
