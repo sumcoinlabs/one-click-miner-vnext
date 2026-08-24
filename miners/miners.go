@@ -35,7 +35,7 @@ type MinerBinary struct {
 
 func GetMinerBinaries() []MinerBinary {
 	binaries := []MinerBinary{}
-	err := util.GetJson("https://raw.githubusercontent.com/sumcoinlabs/one-click-miner-vnext/macos-support/miners.json", &binaries)
+	err := util.GetJson("https://raw.githubusercontent.com/sumcoinlabs/one-click-miner-vnext/master/miners.json", &binaries)
 	if err != nil {
 		logging.Errorf("Error fetching miner binaries: %v", err)
 		return binaries
